@@ -311,9 +311,12 @@ int main(int argc, char *argv[]){
       if (verbose_) std::cout << "[INFO] got roorealvars from ws ? mass " << mass << " dz " << dZ << std::endl;
       
       // access dataset and immediately reduce it!
-			if (isFlashgg_){
-				RooDataSet *data0   = (RooDataSet*)inWS->data(
-          Form("%s_%d_13TeV_%s",proc.c_str(),mass_,flashggCats_[cat].c_str()));
+      if (isFlashgg_){
+	for( auto ws : inWS->getWsList() )
+	  ws->Print();
+	cout << Form("%s_%d_13TeV_%s",proc.c_str(),mass_,flashggCats_[cat].c_str()) << endl;
+	RooDataSet *data0   = (RooDataSet*)inWS->data(
+						      Form("%s_%d_13TeV_%s",proc.c_str(),mass_,flashggCats_[cat].c_str()));
         if(verbose_) {
           std::cout << "[INFO] got dataset data0 ? " << data0 << "now make empty clones " << std::endl;
           if (data0) {
@@ -324,6 +327,8 @@ int main(int argc, char *argv[]){
           }
         }
         
+	cout << data0 << endl;
+	data0->Print();
         data = (RooDataSet*) data0->emptyClone()->reduce(RooArgSet(*mass, *dZ));
         dataRV = (RooDataSet*) data0->emptyClone()->reduce(RooArgSet(*mass, *dZ));
         dataWV = (RooDataSet*) data0->emptyClone()->reduce(RooArgSet(*mass, *dZ));

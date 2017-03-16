@@ -891,6 +891,8 @@ int main(int argc, char *argv[]){
       if (isFlashgg_){
         
         outWS->import(*intLumi_);
+	for(auto ss : procs_)
+	  cout << ss << endl;
         FinalModelConstruction finalModel(massList_, mass_,MH,intLumi_,mhLow_,mhHigh_,proc,cat,doSecondaryModels_,systfilename_,skipMasses_,verbose_,procs_, flashggCats_,plotDir_, isProblemCategory,isCutBased_,sqrts_,doQuadraticSigmaSum_);
         
         finalModel.setSecondaryModelVars(MH_SM,DeltaM,MH_2,higgsDecayWidth);

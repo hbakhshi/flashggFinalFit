@@ -156,6 +156,9 @@ TGraph * Normalization_8TeV::GetSigmaGraph(TString process)
 		XSectionMap = &XSectionMap_zh;
 	} else if (process.Contains("grav")){
 		XSectionMap = &XSectionMap_sm;
+	} else if (process.Contains("thq")){
+	  XSectionMap = new std::map<double,double>();
+	  XSectionMap->insert( std::pair<double,double>(125. , 0.001) );
 	} else {
 		std::cout << "[WARNING] Warning ggh, vbf, wh, zh, wzh, tth or grav not found in histname!!!!" << std::endl;
 		//exit(1);
@@ -222,6 +225,10 @@ double Normalization_8TeV::GetXsection(double mass, TString HistName) {
 		XSectionMap = &XSectionMap_tth;
 	} else if (HistName.Contains("grav")) {
 		XSectionMap = &XSectionMap_sm;
+	} 
+	else if (HistName.Contains("thq")){
+	  XSectionMap = new std::map<double,double>();
+	  XSectionMap->insert( std::pair<double,double>(125. , 0.001) );
 	} else {
 		std::cout << "[WARNING] Warning ggh, vbf, wh, zh, wzh, tth or grav not found in " << HistName << std::endl;
 		//exit(1);

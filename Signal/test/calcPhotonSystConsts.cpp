@@ -345,7 +345,10 @@ vector<TH1F*> getHistograms(vector<TFile*> files, string name, string syst){
 			TH1F *up =  new TH1F(Form("%s_%sUp01sigma",name.c_str(),syst.c_str()),Form("%s_%sUp01sigma",name.c_str(),syst.c_str()),80,100,180);
 			TH1F *down = new TH1F(Form("%s_%sDown01sigma",name.c_str(),syst.c_str()),Form("%s_%sDown01sigma",name.c_str(),syst.c_str()),80,100,180);
 			TH1F *nominal = new TH1F((Form("%s_%s",name.c_str(),syst.c_str())),(Form("%s%s",name.c_str(),syst.c_str())),80,100,180);
-			RooDataSet *rds_up = (RooDataSet*) inWS_->data((Form("%s_%sUp01sigma",name.c_str(),syst.c_str())));
+
+			cout << (Form("%s_%sUp01sigma",name.c_str(),syst.c_str())) << endl;
+			RooDataSet *rds_up = (RooDataSet*) inWS_->data( (Form("%s_%sUp01sigma",name.c_str(),syst.c_str()))) ;
+								       
 			RooDataSet *rds_down = (RooDataSet*) inWS_->data((Form("%s_%sDown01sigma",name.c_str(),syst.c_str())));
 			RooDataSet *rds_nom = (RooDataSet*) inWS_->data((Form("%s",name.c_str())));
 				
@@ -524,8 +527,8 @@ int main(int argc, char *argv[]){
 			// photon smears not correlated
 			if (photonCatSmearsStr_.size()!=0){
 				for (vector<string>::iterator phoCat=photonCatSmears_.begin(); phoCat!=photonCatSmears_.end(); phoCat++){
-
-					vector<TH1F*> hists;
+				  cout << *phoCat << endl;
+				  vector<TH1F*> hists;
 					if (isFlashgg_){ // Smearing not yet supported for Flashgg
 						string flashggCat = flashggCats_[cat]; 
 						hists= getHistograms(inFiles,Form("%s_%d_13TeV_%s",proc->c_str(),mh_,flashggCat.c_str()),Form("MCSmear%s",phoCat->c_str()));
