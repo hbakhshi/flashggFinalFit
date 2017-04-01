@@ -1,0 +1,7 @@
+#proc cat nGausRV nGausWV
+ggh THQLeptonicTag -1 -1 gghpre THQLeptonicTag
+gghpre THQLeptonicTag 4 3
+thq THQLeptonicTag 4 -1
+thw THQLeptonicTag 2 -1
+tth THQLeptonicTag 4 -1
+vbf THQLeptonicTag -1 -1 gghpre THQLeptonicTag
