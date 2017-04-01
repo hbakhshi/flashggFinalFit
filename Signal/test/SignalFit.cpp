@@ -100,12 +100,12 @@ float originalIntLumi_;
 float mcBeamSpotWidth_=5.14; //cm // the beamspot has a certain width in MC which is not necessarily the same in data. for the data/MC to agree, we reweight the MC to match the data Beamspot width, using dZ as a proxy (they have a factor of sqrt(2) because you are subtracting one gaussain distributed quantity from another)
 //float dataBeamSpotWidth_=4.24; //cm
 float dataBeamSpotWidth_=3.5; //cm
-//string referenceProc_="ggh";
-string referenceProc_="GG2H";
-//string referenceProcWV_="ggh";
-string referenceProcWV_="GG2H";
-//string referenceProcTTH_="tth";
-string referenceProcTTH_="TTH";
+string referenceProc_="ggh";
+//string referenceProc_="GG2H";
+string referenceProcWV_="ggh";
+//string referenceProcWV_="GG2H";
+string referenceProcTTH_="tth";
+//string referenceProcTTH_="TTH";
 string referenceTagWV_="UntaggedTag_2";
 string referenceTagRV_="UntaggedTag_2";
 vector<string> map_proc_;
@@ -216,8 +216,9 @@ void OptionParser(int argc, char *argv[]){
   split(procs_,procStr_,boost::is_any_of(","));
 	split(flashggCats_,flashggCatsStr_,boost::is_any_of(","));
 	split(filename_,filenameStr_,boost::is_any_of(","));
-  split(split_,splitStr_,boost::is_any_of(",")); // proc,cat
-
+  if( splitStr_ != "" )
+    split(split_,splitStr_,boost::is_any_of(",")); // proc,cat
+  cout << "splitter : " << splitStr_ << " , " << split_.size() << endl;
 }
 
 // used to get index of the reference dataset in the list of requried guassians.
@@ -325,18 +326,18 @@ void plotBeamSpotDZdist(RooDataSet *data0, string suffix=""){
 	}
 	histSmallDZ->Draw();
   histSmallDZ->Fit("gaus","Q");
-	c->Print(Form("/vols/build/cms/es811/FreshStart/Pass1/AllTags/CMSSW_7_4_7/src/flashggFinalFit/Signal/debug-%s_smallDz_%s_%s.pdf",data0->GetName(),extra.c_str(),suffix.c_str()));
-	c->Print(Form("/vols/build/cms/es811/FreshStart/Pass1/AllTags/CMSSW_7_4_7/src/flashggFinalFit/Signal/debug-%s_smallDz_%s_%s.png",data0->GetName(),extra.c_str(),suffix.c_str()));
+	c->Print(Form("./debug/debug-%s_smallDz_%s_%s.pdf",data0->GetName(),extra.c_str(),suffix.c_str()));
+	c->Print(Form("./debug/debug-%s_smallDz_%s_%s.png",data0->GetName(),extra.c_str(),suffix.c_str()));
 	histLargeDZ->Draw();
   histLargeDZ->Fit("gaus","Q");
-	c->Print(Form("/vols/build/cms/es811/FreshStart/Pass1/AllTags/CMSSW_7_4_7/src/flashggFinalFit/Signal/debug-%s_largeDz_%s_%s.pdf",data0->GetName(),extra.c_str(),suffix.c_str()));
-	c->Print(Form("/vols/build/cms/es811/FreshStart/Pass1/AllTags/CMSSW_7_4_7/src/flashggFinalFit/Signal/debug-%s_largeDz_%s_%s.png",data0->GetName(),extra.c_str(),suffix.c_str()));
+	c->Print(Form("./debug/debug-%s_largeDz_%s_%s.pdf",data0->GetName(),extra.c_str(),suffix.c_str()));
+	c->Print(Form("./debug/debug-%s_largeDz_%s_%s.png",data0->GetName(),extra.c_str(),suffix.c_str()));
 //	delete c;
 	histLargeDZ->Add(histSmallDZ);
 	histLargeDZ->Draw();
   histLargeDZ->Fit("gaus","Q");
-	c->Print(Form("/vols/build/cms/es811/FreshStart/Pass1/AllTags/CMSSW_7_4_7/src/flashggFinalFit/Signal/debug-%s_totalDz_%s_%s.pdf",data0->GetName(),extra.c_str(),suffix.c_str()));
-	c->Print(Form("/vols/build/cms/es811/FreshStart/Pass1/AllTags/CMSSW_7_4_7/src/flashggFinalFit/Signal/debug-%s_totalDz_%s_%s.png",data0->GetName(),extra.c_str(),suffix.c_str()));
+	c->Print(Form("./debug/debug-%s_totalDz_%s_%s.pdf",data0->GetName(),extra.c_str(),suffix.c_str()));
+	c->Print(Form("./debug/debug-%s_totalDz_%s_%s.png",data0->GetName(),extra.c_str(),suffix.c_str()));
 	delete histSmallDZ;
 	delete histLargeDZ;
   gStyle->SetOptFit();
@@ -442,11 +443,13 @@ int main(int argc, char *argv[]){
 
   // reference details for low stats cats
   // need to make this configurable ?! -LC
-  //referenceProc_="ggh";
-  referenceProc_="GG2H";
-  //referenceProcTTH_="tth";
-  referenceProcTTH_="TTH";
+	//  referenceProc_="ggh";
+	referenceProc_="gghpre";
+  //referenceProc_="GG2H";
+  referenceProcTTH_="tth";
+  //referenceProcTTH_="TTH";
   referenceTagWV_="UntaggedTag_2"; // histest stats WV is ggh Untagged 3. 
+  referenceTagWV_="THQLeptonicTag";
   referenceTagRV_="UntaggedTag_2"; // fairly low resolution tag even for ggh, more approprioate as te default than re-using the original tag.
   // are WV which needs to borrow should be taken from here
   
@@ -713,7 +716,7 @@ int main(int argc, char *argv[]){
     for (int mhIndex=0; mhIndex< massList_.size() ; mhIndex++){
       int mh=massList_[mhIndex];
       if (skipMass(mh)) continue;
-      if( (mh!=125) && proc=="testBBH" ) continue;
+      if( (mh!=125) && (proc=="testBBH" || proc=="thq" || proc=="thw") ) continue;
       RooDataSet *dataRV; 
       RooDataSet *dataWV; 
       RooDataSet *dataRVRef; 
@@ -872,7 +875,7 @@ int main(int argc, char *argv[]){
       FITdatasetsRV.insert(pair<int,RooDataSet*>(mh,dataRVRef));
       if (verbose_) std::cout << "[INFO] inserting FIT WVdatasets" << *dataWVRef << std::endl;
       FITdatasetsWV.insert(pair<int,RooDataSet*>(mh,dataWVRef));
-      if (verbose_)std::cout << "[INFO] inserting refular RV+WV " << *data << std::endl;
+      if (verbose_)std::cout << "[INFO] inserting regular RV+WV " << *data << std::endl;
       datasets.insert(pair<int,RooDataSet*>(mh,data));
       if (verbose_) std::cout << "[INFO] Original Dataset: "<< *data << std::endl;
     }
@@ -911,9 +914,7 @@ int main(int argc, char *argv[]){
     if(useSSF_){
     // right vertex
     if (verbose_) std::cout << "[INFO] preapraing initialfit RV, massList size "<< massList_.size() << std::endl;
-    int maxOrder = 1;
-    if( proc=="testBBH" ) maxOrder=0;
-    SimultaneousFit simultaneousFitRV(mass_,MH,mhLow_,mhHigh_,skipMasses_,binnedFit_,nBins_,massList_,cat,proc,Form("%s/rv",plotDir_.c_str()), /*maxOrder of MH depende of RooPolyVars*/ maxOrder);
+    SimultaneousFit simultaneousFitRV(mass_,MH,mhLow_,mhHigh_,skipMasses_,binnedFit_,nBins_,massList_,cat,proc,Form("%s/rv",plotDir_.c_str()), /*maxOrder of MH depende of RooPolyVars*/ 0);
     simultaneousFitRV.setVerbosity(verbose_);
     if (!cloneFits_) {
       if (verbose_) std::cout << "[INFO] RV building sum of gaussians with nGaussiansRV " << nGaussiansRV << std::endl;
@@ -943,7 +944,7 @@ int main(int argc, char *argv[]){
 
     // wrong vertex
     if (verbose_) std::cout << "[INFO] preparing initialfit WV, masList size "<< massList_.size() << std::endl;
-    SimultaneousFit simultaneousFitWV(mass_,MH,mhLow_,mhHigh_,skipMasses_,binnedFit_,nBins_,massList_,cat,proc,Form("%s/wv",plotDir_.c_str()), /*maxOrder of MH depende of RooPolyVars*/ maxOrder);
+    SimultaneousFit simultaneousFitWV(mass_,MH,mhLow_,mhHigh_,skipMasses_,binnedFit_,nBins_,massList_,cat,proc,Form("%s/wv",plotDir_.c_str()), /*maxOrder of MH depende of RooPolyVars*/ 0);
     simultaneousFitWV.setVerbosity(verbose_);
     if (!cloneFits_) {
       if (verbose_) std::cout << "[INFO] WV building sum of gaussians wth nGaussiansWV "<< nGaussiansWV << std::endl;
@@ -1132,12 +1133,23 @@ int main(int argc, char *argv[]){
     cout << "[INFO] Starting to combine fits..." << endl;
     // this guy packages everything up
     WSTFileWrapper *outWSWrapper = new WSTFileWrapper(outFile, outWS);
+    auto it = std::find(procs_.begin(), procs_.end(), "gghpre");
+    if(it != procs_.end()){
+      procs_.erase(it);
+      cout << "gghpre was deleted form the list" << endl;
+    }else{
+      cout << "gghpre was not found to be deleted form the list" << endl;
+    }
     Packager packager(outWSWrapper, outWS,procs_,nCats_,mhLow_,mhHigh_,skipMasses_,sqrts_,skipPlots_,plotDir_,mergeWS,cats_,flashggCats_);
     
     // if we are doing jobs for each proc/tag, want to do the split.
     bool split =0;
     if (split_.size() > 0) split=1; 
-    packager.packageOutput(/*split*/split, /*proc*/split_[0], /*tag*/ split_[1] );
+    //cout << "split value is " << split << ", " << splitStr_ << " , " << split_[0] << " , " << split_[1] << " . "  << endl;
+    if(split)
+      packager.packageOutput(/*split*/split, /*proc*/split_[0], /*tag*/ split_[1] );
+    else
+      packager.packageOutput(/*split*/split, "" , "" );
     sw.Stop();
     cout << "[INFO] Combination complete." << endl;
     cout << "[INFO] Whole process took..." << endl;

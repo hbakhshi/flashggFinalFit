@@ -666,7 +666,9 @@ void SimultaneousFit::runFits(int ncpu,string outdir, float epsilon){
       index++;
     }
 
-    canvas1 = new TCanvas("c","c",500,500);
+    TString snametemp = Form("%s_SimultaneousFitDebug_order%d.pdf",outdir.c_str(),iOrder) ;
+    snametemp.ReplaceAll( "/" , "_" );
+    canvas1 = new TCanvas( snametemp,"c",500,500);
     //draw, put cosmetics on and save
     frame->Draw();
     TLatex *lat = new TLatex(); lat->SetTextSize(0.05); lat->SetNDC();
@@ -674,8 +676,10 @@ void SimultaneousFit::runFits(int ncpu,string outdir, float epsilon){
     lat->DrawLatex(0.14, 0.85,Form("#chi^{2}/N_{dof}=%.2f / %d",totalChi2,ndof));
     lat->DrawLatex(0.14, 0.75,Form("minNll=%.9f ",minNll));
     chi2_values_str.push_back(Form("%.2f / %d     ",totalChi2,ndof));
-    canvas1->SaveAs(Form("%s_SimultaneousFitDebug_order%d.pdf",outdir.c_str(),iOrder));
-    canvas1->SaveAs(Form("%s_SimultaneousFitDebug_order%d.png",outdir.c_str(),iOrder));
+    cout << canvas1 << "->" ;
+
+    // canvas1->SaveAs(Form("%s_SimultaneousFitDebug_order%d.pdf",outdir.c_str(),iOrder));
+    // canvas1->SaveAs(Form("%s_SimultaneousFitDebug_order%d.png",outdir.c_str(),iOrder));
     
     //can also make some debug plots for the individual params (here plotted vs MH)
     // this is turned off by default but if --verbose then they will print

@@ -149,7 +149,7 @@ TGraph * Normalization_8TeV::GetSigmaGraph(TString process)
 {
 	TGraph * gr = new TGraph();
 	std::map<double, double> * XSectionMap = 0 ;
-	if ( process == "ggh" || process == "ggH" || process.Contains("GG2H") ) {
+	if ( process == "ggh" || process == "ggH" || process.Contains("GG2H")  || process.Contains("ggh")  ) {
 		XSectionMap = &XSectionMap_ggh;
 	} else if ( process == "vbf" || process.Contains("VBF") ) { // FIXME
 		XSectionMap = &XSectionMap_vbf;
@@ -178,7 +178,17 @@ TGraph * Normalization_8TeV::GetSigmaGraph(TString process)
 		XSectionMap = &XSectionMap_ZH2HQQ;
 	} else if ( process.Contains("testBBH") ) {
 		XSectionMap = &XSectionMap_testBBH;
-	} else {
+	} else if (process.Contains("thq")){
+	  XSectionMap = new std::map<double,double>();
+	  XSectionMap->insert( std::pair<double,double>(125. , 0.001) );
+	  XSectionMap->insert( std::pair<double,double>(120. , 0.001) );
+	  XSectionMap->insert( std::pair<double,double>(130. , 0.001) );
+	}else if (process.Contains("thw")){
+	  XSectionMap = new std::map<double,double>();
+	  XSectionMap->insert( std::pair<double,double>(125. , 0.001) );
+	  XSectionMap->insert( std::pair<double,double>(120. , 0.001) );
+	  XSectionMap->insert( std::pair<double,double>(130. , 0.001) );
+	}else {
 		std::cout << "[WARNING] Warning ggh, vbf, wh, zh, wzh, tth or grav or STXS proc not found in histname!!!!" << std::endl;
 		//exit(1);
 	}
@@ -256,6 +266,16 @@ double Normalization_8TeV::GetXsection(double mass, TString HistName) {
 		XSectionMap = &XSectionMap_ZH2HQQ;
 	} else if (HistName.Contains("testBBH")) {
 		XSectionMap = &XSectionMap_testBBH;
+	} else if (HistName.Contains("thq")){
+	  XSectionMap = new std::map<double,double>();
+	  XSectionMap->insert( std::pair<double,double>(125. , 0.001) );
+	  XSectionMap->insert( std::pair<double,double>(120. , 0.001) );
+	  XSectionMap->insert( std::pair<double,double>(130. , 0.001) );
+	} else if (HistName.Contains("thw")){
+	  XSectionMap = new std::map<double,double>();
+	  XSectionMap->insert( std::pair<double,double>(125. , 0.001) );
+	  XSectionMap->insert( std::pair<double,double>(120. , 0.001) );
+	  XSectionMap->insert( std::pair<double,double>(130. , 0.001) );
 	} else {
 		std::cout << "[WARNING] Warning ggh, vbf, wh, zh, wzh, tth or grav or STXS proc not found in " << HistName << std::endl;
 		//exit(1);

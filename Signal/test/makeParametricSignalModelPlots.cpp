@@ -128,6 +128,8 @@ map<string,RooDataSet*> getFlashggDataGranular(RooWorkspace *work, int ncats, in
   for (int cat=0; cat<ncats; cat++){
     for (int proc=0; proc < procs_.size() ; proc++){
      if (verbose_) std::cout << "INFO looking for this workspace: " << Form("sig_%s_mass_m%3d_%s",procs_[proc].c_str(),m_hyp,flashggCats_[cat].c_str()) << std::endl;
+     if( procs_[proc] == "gghpre" )
+       continue;
      std::cerr << "INFO looking for this workspace: " << Form("sig_%s_mass_m%3d_%s",procs_[proc].c_str(),m_hyp,flashggCats_[cat].c_str()) << std::endl;
      result.insert(pair<string,RooDataSet*>(Form("%s_%s",procs_[proc].c_str(),flashggCats_[cat].c_str()),(RooDataSet*)work->data(Form("sig_%s_mass_m%3d_%s",procs_[proc].c_str(),m_hyp,flashggCats_[cat].c_str()))));
       assert(work->data(Form("sig_%s_mass_m%3d_%s",procs_[proc].c_str(),m_hyp,flashggCats_[cat].c_str())));
@@ -164,6 +166,8 @@ map<string,RooAddPdf*> getFlashggPdfsGranular(RooWorkspace *work, int ncats){
   map<string,RooAddPdf*> result;
   for (int cat=0; cat<ncats; cat++){
     for (int proc=0; proc< procs_.size() ; proc++){
+      if( procs_[proc] == "gghpre" )
+	continue;
       result.insert(pair<string,RooAddPdf*>(Form("%s_%s",procs_[proc].c_str(),flashggCats_[cat].c_str()),(RooAddPdf*)work->pdf((Form("extendhggpdfsmrel_13TeV_%s_%sThisLumi",procs_[proc].c_str(),flashggCats_[cat].c_str())))));
       assert(work->pdf((Form("extendhggpdfsmrel_13TeV_%s_%sThisLumi",procs_[proc].c_str(),flashggCats_[cat].c_str()))));
   }
@@ -599,6 +603,7 @@ int main(int argc, char *argv[]){
 
   TFile *hggFile = TFile::Open(filename_.c_str());
   RooWorkspace *hggWS;
+  hggFile->ls();
   hggWS = (RooWorkspace*)hggFile->Get(Form("wsig_%dTeV",sqrts_));
 
   if (!hggWS) {

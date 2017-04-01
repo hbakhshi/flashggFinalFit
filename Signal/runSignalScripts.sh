@@ -9,12 +9,13 @@ SCALES="HighR9EE,LowR9EE,HighR9EB,LowR9EB"
 #SCALESCORR="MaterialCentral,MaterialForward,FNUFEE,FNUFEB,ShowerShapeHighR9EE,ShowerShapeHighR9EB,ShowerShapeLowR9EE,ShowerShapeLowR9EB"
 SCALESCORR="MaterialCentral,MaterialForward"
 #SCALESGLOBAL="NonLinearity:0:2.6"
+#3SMEARS="HighR9EE,LowR9EE,HighR9EB,LowR9EB" #DRY RUN
+SMEARS="HighR9EERho,LowR9EERho,HighR9EBRho,LowR9EBRho,HighR9EEPhi,LowR9EEPhi,HighR9EBPhi,LowR9EBPhi"
 SCALESGLOBAL="NonLinearity,Geant4,LightYield,Absolute"
-SMEARS="HighR9EE,LowR9EE,HighR9EB,LowR9EB" #DRY RUN
-MASSLIST="120,125,130"
+MASSLIST="125"
 FTESTONLY=0
 CALCPHOSYSTONLY=0
-SIMULATENOUSMASSPOINTFITTING=0
+SIMULATENOUSMASSPOINTFITTING=1
 USEDCBP1G=0
 SIGFITONLY=0
 SIGPLOTSONLY=0
@@ -208,7 +209,7 @@ if [ $SIGFITONLY == 1 ]; then
   
   
     echo "./bin/SignalFit -i $FILE -d dat/newConfig_$EXT.dat  --mhLow=120 --mhHigh=130 -s dat/photonCatSyst_$EXT.dat --procs $PROCS -o $OUTDIR/CMS-HGG_mva_13TeV_sigfit.root -p $OUTDIR/sigfit -f $CATS --changeIntLumi $INTLUMI  --useDCBplusGaus $USEDCBP1G --useSSF $SIMULATENOUSMASSPOINTFITTING --massList $MASSLIST"
-    ./bin/SignalFit -i $FILE -d dat/newConfig_$EXT.dat  --mhLow=120 --mhHigh=130 -s dat/photonCatSyst_$EXT.dat --procs $PROCS -o $OUTDIR/CMS-HGG_mva_13TeV_sigfit.root -p $OUTDIR/sigfit -f $CATS --changeIntLumi $INTLUMI  --useDCBplusGaus $USEDCBP1G --useSSF $SIMULATENOUSMASSPOINTFITTING --massList $MASSLIST  
+    ./bin/SignalFit -i $FILE -d dat/newConfig_$EXT.dat  --mhLow=120 --mhHigh=130 -s dat/photonCatSyst_$EXT.dat --procs $PROCS -o $OUTDIR/CMS-HGG_sigfit_$EXT.root -p $OUTDIR/sigfit -f $CATS --changeIntLumi $INTLUMI  --useDCBplusGaus $USEDCBP1G --useSSF $SIMULATENOUSMASSPOINTFITTING --massList $MASSLIST  
   else
     echo "./python/submitSignalFit.py -i $FILE -d dat/newConfig_$EXT.dat  --mhLow=120 --mhHigh=130 -s dat/photonCatSyst_$EXT.dat --procs $PROCS -o $OUTDIR/CMS-HGG_sigfit_$EXT.root -p $OUTDIR/sigfit -f $CATS --changeIntLumi $INTLUMI --batch $BATCH --massList $MASSLIST -q $DEFAULTQUEUE $BSOPT --useSSF $SIMULATENOUSMASSPOINTFITTING --useDCB_1G $USEDCBP1G "
     ./python/submitSignalFit.py -i $FILE -d dat/newConfig_$EXT.dat  --mhLow=120 --mhHigh=130 -s dat/photonCatSyst_$EXT.dat --procs $PROCS -o $OUTDIR/CMS-HGG_sigfit_$EXT.root -p $OUTDIR/sigfit -f $CATS --changeIntLumi $INTLUMI --batch $BATCH --massList $MASSLIST -q $DEFAULTQUEUE $BSOPT --useSSF $SIMULATENOUSMASSPOINTFITTING --useDCB_1G $USEDCBP1G 
